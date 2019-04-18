@@ -4,6 +4,11 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,14 +16,39 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import lejos.remote.ev3.RMIRegulatedMotor;
+import lejos.remote.ev3.RemoteEV3;
+
 public class Main extends JFrame {
 
 	private JPanel contentPane;
+	static RemoteEV3 EV3 = null;
+	static RMIRegulatedMotor A_Motor = null;
+	static RMIRegulatedMotor D_Motor = null;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
+
+		try {
+			EV3 = new RemoteEV3("10.0.1.1");
+		} catch (RemoteException | MalformedURLException | NotBoundException e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+		}
+
+		A_Motor = EV3.createRegulatedMotor("A", 'L');
+		D_Motor = EV3.createRegulatedMotor("D", 'L');
+		try {
+			A_Motor.setSpeed(100);
+			D_Motor.setSpeed(100);
+		} catch (RemoteException e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -35,6 +65,26 @@ public class Main extends JFrame {
 	 * Create the frame.
 	 */
 	public Main() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				/**
+				 * モーターのポートを閉じる
+				 * */
+				try {
+					A_Motor.close();
+				} catch (RemoteException e2) {
+					// TODO 自動生成された catch ブロック
+					e2.printStackTrace();
+				}
+				try {
+					D_Motor.close();
+				} catch (RemoteException e1) {
+					// TODO 自動生成された catch ブロック
+					e1.printStackTrace();
+				}
+			}
+		});
 		setTitle("Controller");
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,6 +129,14 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターを回す
 					 * ***/
+					try {
+						A_Motor.forward();
+						D_Motor.forward();
+					} catch (RemoteException e2) {
+						// TODO 自動生成された catch ブロック
+						e2.printStackTrace();
+					}
+					
 					break;
 				//押されたキーが『↓』なら画面上の上矢印の色を『赤』に
 				case KeyEvent.VK_DOWN:
@@ -87,6 +145,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターを回す
 					 * ***/
+					try {
+						A_Motor.backward();
+						D_Motor.backward();
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				//押されたキーが『←』なら画面上の上矢印の色を『赤』に
 				case KeyEvent.VK_LEFT:
@@ -95,6 +160,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターを回す
 					 * ***/
+					try {
+						A_Motor.backward();
+						D_Motor.forward();
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				//押されたキーが『→』なら画面上の上矢印の色を『赤』に
 				case KeyEvent.VK_RIGHT:
@@ -103,6 +175,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターを回す
 					 * ***/
+					try {
+						A_Motor.forward();
+						D_Motor.backward();
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				default:
 					Key_Name = "other";
@@ -128,6 +207,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターをストップ
 					 * ***/
+					try {
+						A_Motor.stop(true);
+						D_Motor.stop(true);
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				//話されたキーが『↓』なら文字色を黒に
 				case KeyEvent.VK_DOWN:
@@ -136,6 +222,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターをストップ
 					 * ***/
+					try {
+						A_Motor.stop(true);
+						D_Motor.stop(true);
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				//話されたキーが『←』なら文字色を黒に
 				case KeyEvent.VK_LEFT:
@@ -144,6 +237,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターをストップ
 					 * ***/
+					try {
+						A_Motor.stop(true);
+						D_Motor.stop(true);
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				//話されたキーが『→』なら文字色を黒に
 				case KeyEvent.VK_RIGHT:
@@ -152,6 +252,13 @@ public class Main extends JFrame {
 					/***
 					 * ここでモーターをストップ
 					 * ***/
+					try {
+						A_Motor.stop(true);
+						D_Motor.stop(true);
+					} catch (RemoteException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+					}
 					break;
 				default:
 					Key_Name = "other";
