@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import lejos.hardware.Sound;
 import lejos.remote.ev3.RMIRegulatedMotor;
 import lejos.remote.ev3.RemoteEV3;
 
@@ -38,17 +39,21 @@ public class Main extends JFrame {
 			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
+		EV3.setDefault();
+		Sound.beepSequenceUp();;
+		EV3.getTextLCD().clear();
+		EV3.getTextLCD().drawString("Connected", MAXIMIZED_HORIZ, MAXIMIZED_VERT);
 
 		A_Motor = EV3.createRegulatedMotor("A", 'L');
 		D_Motor = EV3.createRegulatedMotor("D", 'L');
 		try {
-			A_Motor.setSpeed(100);
-			D_Motor.setSpeed(100);
+			A_Motor.setSpeed(900);
+			D_Motor.setSpeed(900);
 		} catch (RemoteException e1) {
 			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 		}
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -73,6 +78,7 @@ public class Main extends JFrame {
 				 * */
 				try {
 					A_Motor.close();
+
 				} catch (RemoteException e2) {
 					// TODO 自動生成された catch ブロック
 					e2.printStackTrace();
@@ -83,6 +89,9 @@ public class Main extends JFrame {
 					// TODO 自動生成された catch ブロック
 					e1.printStackTrace();
 				}
+				Sound.beepSequence();
+				EV3.getTextLCD().clear();
+				EV3.getTextLCD().drawString("Disconnected", MAXIMIZED_HORIZ, MAXIMIZED_VERT);
 			}
 		});
 		setTitle("Controller");
@@ -136,7 +145,7 @@ public class Main extends JFrame {
 						// TODO 自動生成された catch ブロック
 						e2.printStackTrace();
 					}
-					
+
 					break;
 				//押されたキーが『↓』なら画面上の上矢印の色を『赤』に
 				case KeyEvent.VK_DOWN:
